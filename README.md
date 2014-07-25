@@ -9,7 +9,6 @@
 
 Запуск скрипта осуществляется через inotify, с применением incrontab:
 
-    ::console
     $ incrontab -e
     add string
     /home/swasher/scriptflow/input IN_CLOSE_WRITE /home/swasher/scriptflow/flow.sh $#   

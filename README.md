@@ -11,7 +11,7 @@
 
     $ incrontab -e
     add string
-    /home/swasher/scriptflow/input IN_CLOSE_WRITE /home/swasher/scriptflow/flow.sh $#   
+    /home/<user>/scriptflow/input IN_CLOSE_WRITE /home/<user>/scriptflow/flow.sh $#   
     
 incrontab следит за директорией input, и в случае изиенений в ней запускает скрипт flow.sh.
 Последний является оберткой для flow.py. Обертка предназначена для возможности наблюдения за работой

@@ -226,24 +226,8 @@ if outputter_ftp.name == 'Korol':
     pdf_abs_path = tempdir + newname
 
 
-#Send Preview PDF to kinap
-##############################
-
-# DEPRECATED CODE BLOCK
-# if os.path.isfile(preview_abs_path):
-#     if machine.name == 'SM':
-#         status_kinap, e_kinap = sendfile(preview_abs_path, Speedmaster)
-#     elif machine.name == 'PL':
-#         print 'PLANETA pdf detected'
-#         status_kinap, e_kinap = False, "PLANETA don't have FTP"
-#     elif machine.name == 'AD':
-#         status_kinap, e_kinap = sendfile(preview_abs_path, Adast)
-#     else:
-#         status_kinap, e_kinap = False, "Machine can't be detected"
-# else:
-#     print 'Preview not found and not upload'
-#     status_kinap, e_kinap = False, 'Preview not found'
-
+#Send Preview PDF to printing press FTP
+#-------------------------------------------------------
 if os.path.isfile(preview_abs_path):
     if preview_ftp:
         status_kinap, e_kinap = sendfile(preview_abs_path, preview_ftp)
@@ -253,9 +237,11 @@ else:
     print 'Preview not found and not upload'
     status_kinap, e_kinap = False, 'Preview not found'
 
+
 #Send Original PDF to Outputter
-##############################
+#---------------------------------------------------------
 status_outputter, e_outputter = sendfile(pdf_abs_path, outputter_ftp)
+
 
 #Словарь html_data подставляется в шаблон для формирования web-страницы
 # dt (Текущая дата и время), pdfname, machine,

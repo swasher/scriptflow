@@ -56,20 +56,25 @@ def error_text(status, e):
 
 def crop(pdf_in, pdf_out):
     """
-    Папаметры
-    pdffile
-    paper_size - определяет размер после кропа
-    Machine - определяет клапан
+    Параметры
+    pdf_in - абсолютный путь к пдф
+    pdf_out - абсолютный путь для исходящего пдф
     :return: status
     """
 
-    """ Временно к функции добавлен второй параметр - pdffile_out. В продакшн она должна сохранять результат кропа
+    """ Временно к функции добавлен второй параметр - pdf_out. В продакшн она должна сохранять результат кропа
      в тот же файл
     """
     status = True
 
     # Словарь с размерами бумаги для каждой страницы
     papers = analyze_papersize(pdf_in)  # like {1: ('Speedmaster', 900, 640), 2: ('Dominant', 640, 450)}
+
+    # TODO Доработать временное решение кропа в отсутствии инфы о размере бумаги.
+    if papers == {}:
+        perl_crop = "perl pdfcrop.pl {} {}".format(pdf_in, pdf_out)
+        os.system(perl_crop)
+        return status
 
     input = PdfFileReader(file(pdf_in, "rb"))
     output = PdfFileWriter()

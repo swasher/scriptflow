@@ -19,8 +19,7 @@ def analyze(pdfname):
         pdfname: str
          Путь к pdf файлу
     :return:
-        widthmm - ширина пластины (первой страницы)
-        machine - объект типа PrintingPress
+        machine - объект типа PrintingPress (or None if cant detect)
         pages - кол-во страниц
     """
 
@@ -47,11 +46,12 @@ def analyze(pdfname):
     # Итерируем по всем инстансам класса PrintingPress, если у очередного объекта
     # совпадают ширина и высота пластины с шириной и высотой первого листа pdf,
     # тогда копируем этот инстанс в переменную machine
+    machine = None
     for press in classes.PrintingPress._registry:
         if width == press.plate_w and height == press.plate_h:
             machine = classes.PrintingPress._dic[press.name]
 
-    return width, machine, pages
+    return machine, pages
 
 
 def test():

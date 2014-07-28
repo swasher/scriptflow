@@ -27,7 +27,7 @@ $(function () {
 <div class="panel panel-default">
   <div class="panel-body">
     <h1><span class="label label-success">Upload log</span></h1>
-    <a href="flow.log" class="btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-stats"></span> View log file</a>
+    <a href="flow.html" class="btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-stats"></span> View log file</a>
 
 <table class="table table-striped table-hover table-bordered">
 <tr>

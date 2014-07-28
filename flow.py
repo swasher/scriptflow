@@ -8,6 +8,8 @@
 #TODO ink cov
 #TODO кнопка run
 #TODO перевод на django
+#TODO заменить тело на функцию main
+#TODO переименовать flow в main
 ####
 
 ################ IMPORT SECTION ######################
@@ -51,23 +53,23 @@ html_data = {}
 
 socket.setdefaulttimeout(10.0)
 
-#logging.basicConfig(format='%(asctime)s %(levelname)s \t %(message)s',
-#                    datefmt='%d/%m/%Y %H:%M', filename=homedir+'flow.log', level=logging.DEBUG)
+logging.basicConfig(format='%(asctime)s %(levelname)s \t %(message)s<p>',
+                    datefmt='%d/%m/%Y %H:%M', filename=homedir+'web/flow.html', level=logging.DEBUG)
 
-logger = logging.getLogger("my logger")
-logger.setLevel(logging.DEBUG)
-# Format for our loglines
-formatter = logging.Formatter("%(asctime)s %(levelname)s \t %(message)s")
-# Setup console logging
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-ch.setFormatter(formatter)
-logger.addHandler(ch)
-# Setup file logging as well
-fh = logging.FileHandler(homedir+'web/flow.log')
-fh.setLevel(logging.DEBUG)
-fh.setFormatter(formatter)
-logger.addHandler(fh)
+# logger = logging.getLogger("my logger")
+# logger.setLevel(logging.DEBUG)
+# # Format for our loglines
+# formatter = logging.Formatter("%(asctime)s %(levelname)s \t %(message)s")
+# # Setup console logging
+# ch = logging.StreamHandler()
+# ch.setLevel(logging.DEBUG)
+# ch.setFormatter(formatter)
+# logger.addHandler(ch)
+# # Setup file logging as well
+# fh = logging.FileHandler('flow.log')
+# fh.setLevel(logging.DEBUG)
+# fh.setFormatter(formatter)
+# logger.addHandler(fh)
 
 ######### end section ################
 
@@ -156,7 +158,15 @@ else:
 # outputter: Кто выводит - leonov, korol, etc. - это объект типа FTP_server
 # total_pages, total_plates, pdf_colors - страниц, плит, текстовый блок о красочности
 
-widthmm, machine, complects = analyze(pdf_abs_path)
+machine, complects = analyze(pdf_abs_path)
+
+if machine is None:
+    logging.error('Cant detect machine for {}'.format(pdfname))
+    print 'Cant detect machine for {}'.format(pdfname)
+    print 'Exiting...'
+    os.unlink(pdf_abs_path)
+    os.removedirs(tempdir)
+    exit()
 
 # total_pages тут определяется по кол-ву строк, содержащих тэг HDAG_ColorantNames
 total_plates, pdf_colors = analyze_colorant(pdf_abs_path)
@@ -164,6 +174,9 @@ total_plates, pdf_colors = analyze_colorant(pdf_abs_path)
 paper_size = analyze_papersize(pdf_abs_path)
 
 outputter_ftp = detect_outputter(pdfname)
+
+
+
 preview_ftp = detect_preview_ftp(machine)
 
 # Переименовываем - из названия PDF удаляется имя выводильщика.

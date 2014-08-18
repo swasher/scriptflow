@@ -235,7 +235,7 @@ if outputter_ftp.name == 'Korol':
     #     pass  #что делать, если машина не определилась???
 
     newname = pdfName + '_' + str(machine.plate_w) + pdfExtension
-    
+
     shutil.move(pdf_abs_path, tempdir + newname)
     pdfname = newname
     pdf_abs_path = tempdir + newname

@@ -34,7 +34,7 @@ def sendfile(pdf_ads_path, receiver):
 
     sizeWritten = 0
     totalSize = os.path.getsize(pdf_ads_path)
-    #print 'name:',receiver.name
+    ##print 'name:',receiver.name
     #print 'ip:',receiver.ip
     #print 'port:',receiver.port,  type(receiver.port)
     #print 'login:',receiver.login

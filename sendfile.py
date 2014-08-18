@@ -45,7 +45,7 @@ def sendfile(pdf_ads_path, receiver):
         ftp.connect(receiver.ip, port=receiver.port, timeout=20)   # timeout is 15 seconds
         ftp.login(receiver.login, receiver.passw)
     except Exception, e:
-        logging.error('{0}:{1}: {2}'.format(pdfname, receiver.name, e))
+        logging.error('{0} upload to {1}: {2}'.format(pdfname, receiver.name, e))
         print '==>connect FAILED with error: {0}'.format(e)
         status = False
         return status, e
@@ -63,13 +63,13 @@ def sendfile(pdf_ads_path, receiver):
             speed = totalSize/(time.time()-start)/1024
             print 'Speed: {0:.1f} kB/s equivalent to {1:.2f} MBit/s'.format(speed, speed*8/1024)
         except Exception, e:
-            logging.error('{0}:{1}: {2}'.format(pdfname, receiver.name, e))
+            logging.error('{0} upload to {1}: {2}'.format(pdfname, receiver.name, e))
             print 'upload FAILED with error: {0}'.format(e)
             status = False
             return status, e
             #siteecho(pdfname, receiver.name, 'FAILED', machine, complects, html_data)
         else:
-            logging.info('{0}:{1}: upload OK'.format(pdfname, receiver.name))
+            logging.info('{0} upload to {1}: upload OK'.format(pdfname, receiver.name))
             print 'Upload finished OK'
             #siteecho(pdfname, receiver.name, 'Upload OK', machine, complects, html_data)
         finally:

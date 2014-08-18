@@ -1,14 +1,10 @@
 #!/usr/bin/python
 #coding: utf-8
-from genericpath import isfile
-
 __author__ = 'Алексей'
 
-import tempfile
-import os
+from genericpath import isfile
+from classes import PrintingPress
 from subprocess import Popen, PIPE
-import commands
-import subprocess
 
 
 def analyze_papersize(pdfname):
@@ -24,14 +20,9 @@ def analyze_papersize(pdfname):
         papersizes = None
         return papersizes
 
-    # TODO Список возможных машин прибит гвоздями
-    # TODO вывод cat может быть пуст
-    pdftotext_command = r"pdftotext {input} - | grep -E '(Dominant|Speedmaster|Planeta)'".format(input=pdfname)
+    pdftotext_command = r"pdftotext {input} - | grep -E '({machines})'"\
+        .format(input=pdfname, machines='|'.join([i.name for i in PrintingPress._registry]))  # объяснение см. test1 ниже
     pdftotext_result = Popen(pdftotext_command, shell=True, stdin=PIPE, stdout=PIPE).stdout.read().splitlines()
-
-    # if pdftotext_result == '':
-    #         papersizes = ''
-    #         return papersizes
 
     papersizes = {}
 
@@ -78,5 +69,17 @@ def test():
                 print 'Unknown error'
 
 
+def test1():
+
+    # Используем генератор для получения всех названий машин
+    a = [i.name for i in PrintingPress._registry]
+    print(a)
+    # >>> ['Dominant', 'Speedmaster', 'Planeta']
+
+    # Объеденяем через вертикальный слеш
+    b = '|'.join(a)
+    print(b)
+    # >>> Dominant|Speedmaster|Planeta
+
 if __name__ == '__main__':
-    test()
+    test1()

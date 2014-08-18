@@ -48,12 +48,12 @@ phpfile = homedir + 'web/data.php'
 
 
 ######## some setups #################
-pdfname = sys.argv[1]
+pdfName = sys.argv[1]
 html_data = {}
 
 socket.setdefaulttimeout(10.0)
 
-logging.basicConfig(format='%(asctime)s %(levelname)s \t %(message)s<p>',
+logging.basicConfig(format='%(asctime)s %(levelname)s \t %(message)s <p>',
                     datefmt='%d/%m/%Y %H:%M', filename=homedir+'web/flow.html', level=logging.DEBUG)
 
 # logger = logging.getLogger("my logger")
@@ -82,7 +82,7 @@ def siteecho(html_data):
     """
     html = """<tr class={bg}> \
 <td>{dt}</td> \
-<td>{pdfname}</td> \
+<td>{pdfName}</td> \
 <td>{machine}</td> \
 <td>{total_pages} компл.</td> \
 <td><span data-toggle="tooltip" data-placement="right" title="{colors}">
@@ -111,7 +111,7 @@ def siteecho(html_data):
 ############################################################
 
 print '\n\n'
-print 'START PROCESSING {}'.format(pdfname)
+print 'START PROCESSING {}'.format(pdfName)
 print '----------------------------------------------------------------'
 
 
@@ -119,10 +119,10 @@ print '----------------------------------------------------------------'
 #-----------------------------------------------------------------
 try:
     tempdir = tempfile.mkdtemp(dir=homedir)+'/'
-    shutil.move(inputdir+pdfname, tempdir+pdfname)
-    pdf_abs_path = tempdir+pdfname
+    shutil.move(inputdir+pdfName, tempdir+pdfName)
+    pdf_abs_path = tempdir+pdfName
 except Exception, e:
-    logging.error('{0}: Cant move to temp: {1}'.format(pdfname, e))
+    logging.error('{0}: Cant move to temp: {1}'.format(pdfName, e))
     os.unlink(pdf_abs_path)
     exit()
 
@@ -135,7 +135,7 @@ file_is_not_pdf_document = result_strings != 'PDF document'
 
 pdfExtension = splitext(pdf_abs_path)[1]
 if pdfExtension != ".pdf" or file_is_not_pdf_document:
-    logging.error('{0} File is NOT PDF - exiting...'.format(pdfname))
+    logging.error('{0} File is NOT PDF - exiting...'.format(pdfName))
     os.unlink(pdf_abs_path)
     os.removedirs(tempdir)
     exit()
@@ -145,9 +145,9 @@ if pdfExtension != ".pdf" or file_is_not_pdf_document:
 pdfinfo_command = "pdfinfo {} | grep Creator | tr -s ' ' | cut -f 2 -d ' '".format(pdf_abs_path)
 result_strings = Popen(pdfinfo_command, shell=True, stdin=PIPE, stdout=PIPE).stdout.read().strip()
 if result_strings == 'PrinectSignaStation':
-    print '{} is valid PrinectSignaStation file.'.format(pdfname)
+    print '{} is valid PrinectSignaStation file.'.format(pdfName)
 else:
-    logging.warning('{} created with {}, not Signastation!'.format(pdfname, result_strings))
+    logging.warning('{} created with {}, not Signastation!'.format(pdfName, result_strings))
     #TODO продумать, что делать, если файл не сигновский
 
 
@@ -161,8 +161,8 @@ else:
 machine, complects = analyze(pdf_abs_path)
 
 if machine is None:
-    logging.error('Cant detect machine for {}'.format(pdfname))
-    print 'Cant detect machine for {}'.format(pdfname)
+    logging.error('Cant detect machine for {}'.format(pdfName))
+    print 'Cant detect machine for {}'.format(pdfName)
     print 'Exiting...'
     os.unlink(pdf_abs_path)
     os.removedirs(tempdir)
@@ -173,9 +173,7 @@ total_plates, pdf_colors = analyze_colorant(pdf_abs_path)
 
 paper_size = analyze_papersize(pdf_abs_path)
 
-outputter_ftp = detect_outputter(pdfname)
-
-
+outputter_ftp = detect_outputter(pdfName)
 
 preview_ftp = detect_preview_ftp(machine)
 
@@ -225,16 +223,20 @@ if outputter_ftp.name == 'Leonov':
 if outputter_ftp.name == 'Korol':
     # may be rotate90?
     ###add label 'paper width' for korol
-    fname, fext = os.path.splitext(pdfname)
-    if machine.name == 'SM':
-        newname = fname + '_' + str(SM.plate_w) + fext
-    elif machine.name == 'PL':
-        newname = fname + '_' + str(PL.plate_w) + fext
-    elif machine.name == 'AD':
-        newname = fname + '_' + str(AD.plate_w) + fext
-    else:
-        pass  #что делать, если машина не определилась???
-    shutil.move(tempdir + pdfname, tempdir + newname)
+    #fname, fext = os.path.splitext(pdfname)
+
+    # if machine.name == 'Speedmaster':
+    #     newname = fname + '_' + str(SM.plate_w) + fext
+    # elif machine.name == 'Planeta':
+    #     newname = fname + '_' + str(PL.plate_w) + fext
+    # elif machine.name == 'Dominant':
+    #     newname = fname + '_' + str(AD.plate_w) + fext
+    # else:
+    #     pass  #что делать, если машина не определилась???
+
+    newname = pdfName + '_' + str(machine.plate_w) + pdfExtension
+    
+    shutil.move(pdf_abs_path, tempdir + newname)
     pdfname = newname
     pdf_abs_path = tempdir + newname
 
@@ -269,7 +271,7 @@ else:
     bg = 'default'
 
 html_data['dt'] = datetime.datetime.now().strftime('%d/%m/%Y %H:%M')
-html_data['pdfname'] = pdfname
+html_data['pdfName'] = pdfName
 html_data['machine'] = machine.name
 html_data['total_pages'] = complects
 html_data['total_plates'] = total_plates
@@ -285,7 +287,7 @@ try:
     os.unlink(pdf_abs_path)
     os.unlink(preview_abs_path)
     os.removedirs(tempdir)
-    print '\nSUCCESSFULLY finish and clean.'
+    print '\nSUCCESSFULLY finish.'
 except Exception, e:
-    print 'Problem with cleaning:', e
+    print 'SUCCESSFULLY finish, but problem with cleaning:', e
 

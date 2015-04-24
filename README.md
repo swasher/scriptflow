@@ -1,3 +1,7 @@
+### DEPRECATED
+
+Now it's PDF-Upload on Django framework.
+
 ### Scriptflow
 
 Скрипт для автоматической отправки PDF файлов на фотовывод.
